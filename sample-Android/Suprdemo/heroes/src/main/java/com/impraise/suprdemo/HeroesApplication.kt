@@ -1,15 +1,13 @@
 package com.impraise.suprdemo
 
 import android.app.Application
+import com.impraise.suprdemo.scenes.di.applicationComponent
+import org.koin.android.ext.android.startKoin
 
 class HeroesApplication : Application() {
 
-    companion object {
-        lateinit var instance: HeroesApplication
-    }
-
     override fun onCreate() {
         super.onCreate()
-        instance = this
+        startKoin(this, applicationComponent)
     }
 }

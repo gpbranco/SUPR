@@ -1,30 +1,26 @@
 package com.impraise.suprdemo.scenes.ui
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.lifecycle.Observer
 import com.impraise.supr.game.scenes.presentation.GameScene
 import com.impraise.supr.game.scenes.presentation.GameSceneInteraction
 import com.impraise.supr.game.scenes.presentation.model.GameViewModel
 import com.impraise.suprdemo.R
-import com.impraise.suprdemo.scenes.di.SceneFactory
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_game.start_game_btn as startGameButton
+import kotlinx.android.synthetic.main.activity_game.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.android.synthetic.main.activity_game.continue_btn as continueButton
 import kotlinx.android.synthetic.main.activity_game.new_game_btn as newGameButton
-import kotlinx.android.synthetic.main.activity_game.*
-import java.lang.Exception
+import kotlinx.android.synthetic.main.activity_game.start_game_btn as startGameButton
 
 class GameActivity : AppCompatActivity() {
 
@@ -32,7 +28,7 @@ class GameActivity : AppCompatActivity() {
         private const val TAG = "GameActivity"
     }
 
-    private lateinit var scene: GameScene
+    private val scene: GameScene by viewModel()
     private lateinit var adapter: RoundOptionsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +36,6 @@ class GameActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game)
 
         options.applyAnimation(this)
-
-        scene = ViewModelProviders.of(this, SceneFactory()).get(GameScene::class.java)
 
         adapter = RoundOptionsAdapter(scene).also {
             options.adapter = it
