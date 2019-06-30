@@ -1,33 +1,28 @@
 package com.impraise.supr.game.scenes.domain
 
-import com.impraise.supr.common.Pagination
-import com.impraise.supr.data.PaginatedRepository
-import com.impraise.supr.data.PaginatedResult
 import com.impraise.supr.data.ResultList
 import com.impraise.supr.domain.ReactiveUseCase
 import com.impraise.supr.game.scenes.data.model.Member
 import io.reactivex.Flowable
 import io.reactivex.Single
-import java.util.*
 
 /**
  * Created by guilhermebranco on 3/10/18.
  */
-class LoadRandomPageOfMembersUseCase(
-        private val repository: PaginatedRepository<Member>,
-        private val threshold: Int = 5): ReactiveUseCase<Unit, ResultList<List<Member>>> {
+class SplitIntoGroupsUseCase(
+        private val recursivePageOfMembersUseCase: RecursivePageOfMembersUseCase,
+        private val threshold: Int = 5) : ReactiveUseCase<Unit, ResultList<List<Member>>> {
 
     override fun get(param: Unit): Single<ResultList<List<Member>>> {
-        return repository
-                .fetch(Pagination(50, (0..1000).random().toString()))
+        return recursivePageOfMembersUseCase.get(Unit).toFlowable()
                 .flatMap { result ->
                     when (result) {
-                        is PaginatedResult.Success -> {
+                        is ResultList.Success -> {
                             val members = result.data.toMutableList()
                             members.shuffle()
                             Flowable.fromIterable(members)
                         }
-                        is PaginatedResult.Error -> Flowable.fromIterable(emptyList())
+                        is ResultList.Error -> Flowable.fromIterable(emptyList())
                     }
                 }
                 .buffer(threshold)
@@ -37,6 +32,3 @@ class LoadRandomPageOfMembersUseCase(
                 }
     }
 }
-
-fun IntRange.random() =
-        Random().nextInt((endInclusive + 1) - start) +  start
