@@ -28,9 +28,11 @@ private val gameModule = module {
     }
     factory { CreateGameUseCase(get(), get(), get()) }
     factory { CreateRoundUseCase(roundCreationHelper = get()) }
-    factory<ReactiveUseCase<Unit, ResultList<List<Member>>>> { LoadRandomPageOfMembersUseCase(get()) }
+    factory<ReactiveUseCase<Unit, ResultList<List<Member>>>> { SplitIntoGroupsUseCase(get()) }
+    factory<RecursivePageOfMembersUseCase> { RecursivePageOfMembersUseCase(get(), get()) }
     factory<PaginatedRepository<Member>> { MarvelApiRepository(get()) }
     factory { GamePresenter(WeakReference(get())) }
+    single<RandomPageGenerator> { RandomPageGeneratorDefault() }
     single { RoundCreationHelper(get()) }
     single { GameCreationHelper(get()) }
     single {
