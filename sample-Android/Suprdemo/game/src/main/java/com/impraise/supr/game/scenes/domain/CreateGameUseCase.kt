@@ -18,6 +18,7 @@ import io.reactivex.schedulers.Schedulers
 class CreateGameUseCase(private val membersPaginatedUseCase: ReactiveUseCase<Unit, ResultList<List<Member>>>,
                         private val createRoundUseCase: CreateRoundUseCase,
                         private val gameCreationHelper: GameCreationHelper,
+                        private val maxRoundsCount: Long = 10,
                         private val subscribeOn: Scheduler = Schedulers.io(),
                         private val observerOn: Scheduler = AndroidSchedulers.mainThread()): ReactiveUseCase<Unit, Result<Game>> {
 
@@ -40,6 +41,7 @@ class CreateGameUseCase(private val membersPaginatedUseCase: ReactiveUseCase<Uni
                         }
                     }
                 }
+                .take(maxRoundsCount)
                 .flatMap {
                     createRoundUseCase.get(it).toFlowable()
                 }

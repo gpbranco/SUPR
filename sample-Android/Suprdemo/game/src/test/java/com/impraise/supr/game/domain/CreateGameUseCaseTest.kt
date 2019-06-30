@@ -7,13 +7,14 @@ import com.impraise.supr.game.scenes.data.model.Member
 import com.impraise.supr.game.scenes.domain.*
 import com.impraise.suprdemo.scenes.domain.model.Round
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argWhere
 import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import junit.framework.Assert
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.given
 import org.mockito.Mock
 
 /**
@@ -22,7 +23,7 @@ import org.mockito.Mock
 class CreateGameUseCaseTest {
 
     @Mock
-    private lateinit var membersPaginatedUseCase: LoadRandomPageOfMembersUseCase
+    private lateinit var membersPaginatedUseCase: SplitIntoGroupsUseCase
 
     private lateinit var useCase: CreateGameUseCase
 
@@ -50,6 +51,20 @@ class CreateGameUseCaseTest {
     }
 
     @Test
+    fun `should limit number of rounds`() {
+        val expectedRoundsCount = 10L
+        createGame(GameTestHelper.members(1..50), expectedRoundsCount)
+
+        val testObserver = useCase.get(Unit).test()
+
+        testObserver.assertComplete()
+        testObserver.assertValue {
+            val success = it as Result.Success
+            success.data.currentState.totalRounds == expectedRoundsCount.toInt()
+        }
+    }
+
+    @Test
     fun `should filter groups without at least one avatar`() {
         val noAvatar = Member("NO_AVATAR", "NO_AVATAR")
         val list = members().toMutableList()
@@ -67,7 +82,7 @@ class CreateGameUseCaseTest {
         list += listWithAtLeastOneAvatar
 
         val condition = mock<RoundCreationHelper.Condition<Member>>().apply {
-            given(this.satisfied(com.nhaarman.mockito_kotlin.argWhere {
+            given(this.satisfied(argWhere {
                 it != noAvatar
             })).willReturn(true)
         }
@@ -81,11 +96,12 @@ class CreateGameUseCaseTest {
         return GameTestHelper.members()
     }
 
-    private fun createGame(members: List<List<Member>>) {
+    private fun createGame(members: List<List<Member>>, maxRoundsCount: Long = 5) {
         given(membersPaginatedUseCase.get(any())).willReturn(Single.just(ResultList.Success(members)))
         useCase = CreateGameUseCase(membersPaginatedUseCase,
                 CreateRoundUseCase(roundCreationHelper = RoundCreationHelper(GameTestHelper.alwaysTrueCondition())),
                 GameCreationHelper(GameTestHelper.alwaysTrueCondition()),
+                maxRoundsCount,
                 Schedulers.trampoline(),
                 Schedulers.trampoline())
     }

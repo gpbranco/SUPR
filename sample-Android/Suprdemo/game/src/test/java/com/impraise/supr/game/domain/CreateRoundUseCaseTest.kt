@@ -7,10 +7,11 @@ import com.impraise.supr.game.scenes.domain.CreateRoundUseCase
 import com.impraise.supr.game.scenes.domain.RoundCreationHelper
 import com.impraise.suprdemo.scenes.domain.model.Option
 import com.nhaarman.mockito_kotlin.mock
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.given
 
 /**
  * Created by guilhermebranco on 3/11/18.
