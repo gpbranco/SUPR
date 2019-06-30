@@ -1,5 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="button_text_size_regular">18sp</dimen>
-    <dimen name="avatar_size">200dp</dimen>
+    <dimen name="avatar_size">300dp</dimen>
 </resources>
