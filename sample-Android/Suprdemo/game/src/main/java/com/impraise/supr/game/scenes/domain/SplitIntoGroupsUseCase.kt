@@ -10,11 +10,11 @@ import io.reactivex.Single
  * Created by guilhermebranco on 3/10/18.
  */
 class SplitIntoGroupsUseCase(
-        private val recursivePageOfMembersUseCase: RecursivePageOfMembersUseCase,
+        private val loadRecursiveMembersUseCase: LoadRecursiveMembersUseCase,
         private val threshold: Int = 5) : ReactiveUseCase<Unit, ResultList<List<Member>>> {
 
     override fun get(param: Unit): Single<ResultList<List<Member>>> {
-        return recursivePageOfMembersUseCase.get(Unit).toFlowable()
+        return loadRecursiveMembersUseCase.get(Unit).toFlowable()
                 .flatMap { result ->
                     when (result) {
                         is ResultList.Success -> {

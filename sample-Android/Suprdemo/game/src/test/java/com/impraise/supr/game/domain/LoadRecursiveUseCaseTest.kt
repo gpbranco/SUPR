@@ -6,7 +6,7 @@ import com.impraise.supr.data.PaginatedResult
 import com.impraise.supr.data.ResultList
 import com.impraise.supr.game.scenes.data.model.Member
 import com.impraise.supr.game.scenes.domain.RandomPageGenerator
-import com.impraise.supr.game.scenes.domain.RecursivePageOfMembersUseCase
+import com.impraise.supr.game.scenes.domain.LoadRecursiveMembersUseCase
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Flowable
 import org.junit.Assert
@@ -23,7 +23,7 @@ class LoadRecursiveUseCaseTest {
     @Mock
     lateinit var randomPageGenerator: RandomPageGenerator
 
-    private lateinit var useCase: RecursivePageOfMembersUseCase
+    private lateinit var useCase: LoadRecursiveMembersUseCase
 
     @Before
     fun setup() {
@@ -39,7 +39,7 @@ class LoadRecursiveUseCaseTest {
                 randomPage(any())
             }.thenReturn(1)
         }
-        useCase = RecursivePageOfMembersUseCase(repository, randomPageGenerator = randomPageGenerator)
+        useCase = LoadRecursiveMembersUseCase(repository, randomPageGenerator = randomPageGenerator)
     }
 
     @Test
@@ -76,7 +76,7 @@ class LoadRecursiveUseCaseTest {
                     PaginatedResult.Success(listOf(Member("", "")), firstPageResult)))
         }
 
-        useCase = RecursivePageOfMembersUseCase(repository, randomPageGenerator = randomPageGenerator)
+        useCase = LoadRecursiveMembersUseCase(repository, randomPageGenerator = randomPageGenerator)
 
         useCase.get(Unit).test()
 
@@ -86,20 +86,5 @@ class LoadRecursiveUseCaseTest {
 
         Assert.assertEquals(0, captor.firstValue)
         Assert.assertEquals(30, captor.secondValue)
-
-        /*argumentCaptor<Pagination> {
-            verify(repository) {
-                this.mock.fetch(capture())
-            }
-            Assert.assertNotNull(firstValue)
-        }
-
-        argumentCaptor<Int> {
-            verify(randomPageGenerator) {
-                this.mock.randomPage(capture())
-            }
-            Assert.assertEquals(0, firstValue)
-            Assert.assertEquals(30, secondValue)
-        }*/
     }
 }

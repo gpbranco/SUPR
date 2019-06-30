@@ -3,7 +3,7 @@ package com.impraise.supr.game.domain
 import com.impraise.supr.data.ResultList
 import com.impraise.supr.game.scenes.data.model.Member
 import com.impraise.supr.game.scenes.domain.SplitIntoGroupsUseCase
-import com.impraise.supr.game.scenes.domain.RecursivePageOfMembersUseCase
+import com.impraise.supr.game.scenes.domain.LoadRecursiveMembersUseCase
 import com.nhaarman.mockito_kotlin.stub
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
@@ -18,7 +18,7 @@ import org.mockito.MockitoAnnotations.initMocks
 class SplitIntoGroupsUseCaseTest {
 
     @Mock
-    lateinit var recursivePageOfMembersUseCase: RecursivePageOfMembersUseCase
+    lateinit var recursivePageOfMembersUseCase: LoadRecursiveMembersUseCase
 
     private lateinit var useCase: SplitIntoGroupsUseCase
 
