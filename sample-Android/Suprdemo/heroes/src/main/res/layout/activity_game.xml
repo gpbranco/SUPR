@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layoutAnimation="@anim/layout_animation_bottom_up"
+        android:layoutAnimation="@anim/list_items_layout_animation"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -144,7 +144,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun androidx.recyclerview.widget.RecyclerView.applyAnimation(context: Context) {
-        val resId = R.anim.layout_animation_bottom_up
+        val resId = R.anim.list_items_layout_animation
         val animation = AnimationUtils.loadLayoutAnimation(context, resId)
         this.layoutAnimation = animation
     }
