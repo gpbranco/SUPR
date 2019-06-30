@@ -1,5 +1,6 @@
 package com.impraise.supr.game.scenes.domain
 
+import android.util.Log
 import com.impraise.supr.data.ResultList
 import com.impraise.supr.domain.ReactiveUseCase
 import com.impraise.supr.game.scenes.data.model.Member
@@ -13,17 +14,21 @@ class SplitIntoGroupsUseCase(
         private val loadRecursiveMembersUseCase: LoadRecursiveMembersUseCase,
         private val threshold: Int = 5) : ReactiveUseCase<Unit, ResultList<List<Member>>> {
 
+    companion object {
+        private const val TAG = "SplitIntoGroupsUseCase"
+    }
+
     override fun get(param: Unit): Single<ResultList<List<Member>>> {
         return loadRecursiveMembersUseCase.get(Unit).toFlowable()
                 .flatMap { result ->
-                    when (result) {
-                        is ResultList.Success -> {
-                            val members = result.data.toMutableList()
-                            members.shuffle()
-                            Flowable.fromIterable(members)
+                    Flowable.fromIterable(result.either({
+                        it.toMutableList().apply {
+                            shuffle()
                         }
-                        is ResultList.Error -> Flowable.fromIterable(emptyList())
-                    }
+                    }, {
+                        Log.e(TAG, it.error.message)
+                        emptyList()
+                    }))
                 }
                 .buffer(threshold)
                 .toList()

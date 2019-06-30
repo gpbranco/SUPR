@@ -1,9 +1,15 @@
 package com.impraise.supr.data
 
-sealed class Result<out T> {
+sealed class Result<T> {
 
-    class Success<out T>(val data: T) : Result<T>()
-    class Error<out T>(val error: Throwable, val data: T? = null) : Result<T>()
+    class Success<T>(val data: T) : Result<T>()
+    class Error<T>(val error: Throwable, val data: T? = null) : Result<T>()
+
+    fun either(success: (T) -> T, error: (Result.Error<T>) -> T): T =
+            when (this) {
+                is Result.Success -> success(data)
+                is Result.Error -> error(this)
+            }
 }
 
 sealed class PaginatedResult<out T> {

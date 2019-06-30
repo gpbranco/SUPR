@@ -31,27 +31,22 @@ class CreateGameUseCase(private val membersPaginatedUseCase: ReactiveUseCase<Uni
                 }
                 .toFlowable()
                 .flatMap { result ->
-                    when (result) {
-                        is ResultList.Success -> {
-                            Flowable.fromIterable(result.data)
-                        }
-
-                        is ResultList.Error -> {
-                            Flowable.fromIterable(emptyList())
-                        }
-                    }
+                    Flowable.fromIterable(result.either({
+                        it
+                    }, {
+                        emptyList()
+                    }))
                 }
                 .take(maxRoundsCount)
                 .flatMap {
                     createRoundUseCase.get(it).toFlowable()
                 }
                 .map {
-                    when (it) {
-                        is Result.Success -> {
-                            it.data
-                        }
-                        else -> Round.INVALID_ROUND
-                    }
+                    it.either({ round ->
+                        round
+                    }, {
+                        Round.INVALID_ROUND
+                    })
                 }
                 .toList()
                 .map {

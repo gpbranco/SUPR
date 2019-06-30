@@ -16,7 +16,7 @@ class CreateRoundUseCase(private val numberOfOptions: Int = 4,
                          private val roundCreationHelper: RoundCreationHelper): ReactiveUseCase<List<Member>, Result<Round>> {
 
     override fun get(param: List<Member>): Single<Result<Round>> {
-        return if (param.size < numberOfOptions) Single.just(Result.Error(DomainLayerException(), null))
+        return if (param.size < numberOfOptions) Single.just(Result.Error<Round>(DomainLayerException(), null))
         else Single.just(Result.Success(createRound(param)))
     }
 
