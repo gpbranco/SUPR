@@ -5,8 +5,12 @@ import com.impraise.supr.game.scenes.domain.RoundCreationHelper
 
 class ImageAvailableCondition : RoundCreationHelper.Condition<Member> {
 
+    companion object {
+        private val REGEX = "^((?!(image_not_available|.gif)).)*\$".toRegex()
+    }
+
     override fun satisfied(param: Member): Boolean {
         return param.avatarUrl.isNotEmpty()
-                && !param.avatarUrl.contains("image_not_available")
+                && param.avatarUrl.matches(REGEX)
     }
 }
