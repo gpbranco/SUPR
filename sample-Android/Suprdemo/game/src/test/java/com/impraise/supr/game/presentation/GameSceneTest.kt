@@ -11,12 +11,12 @@ import com.nhaarman.mockito_kotlin.KArgumentCaptor
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
-import junit.framework.Assert.*
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations.*
+import org.mockito.MockitoAnnotations.initMocks
 
 /**
  * Created by guilhermebranco on 3/12/18.

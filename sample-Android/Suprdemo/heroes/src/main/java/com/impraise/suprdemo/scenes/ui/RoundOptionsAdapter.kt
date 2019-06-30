@@ -1,6 +1,5 @@
 package com.impraise.suprdemo.scenes.ui
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
