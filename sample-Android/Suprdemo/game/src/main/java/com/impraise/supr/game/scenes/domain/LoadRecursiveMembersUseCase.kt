@@ -23,15 +23,15 @@ class LoadRecursiveMembersUseCase(
 
     override fun get(param: Unit): Single<ResultList<Member>> {
         return fetch(CurrentState())
-                .flatMap { currentState ->
+                .flatMap { firstState ->
                     Flowable.range(0, numberOfCalls)
-                            .concatMap {
-                                if (it == 0) Flowable.just(currentState)
-                                else fetch(currentState.copy(count = it)).toFlowable()
+                            .concatMapEager {
+                                if (it == 0) Flowable.just(firstState)
+                                else fetch(firstState.copy(count = it)).toFlowable()
                             }
-                            .takeUntil { currentState.count == numberOfCalls }
+                            .takeUntil { it.count == numberOfCalls }
                             .map {
-                                currentState.items
+                                it.items
                             }
                             .reduce(mutableListOf<Member>()) { combined, next ->
                                 combined.apply {
@@ -53,7 +53,7 @@ class LoadRecursiveMembersUseCase(
                         }
                         is PaginatedResult.Error -> {
                             Log.e(TAG, paginatedResult.error.message)
-                            currentState
+                            currentState.copy(items = emptyList())
                         }
                     }
                 }.singleOrError()
