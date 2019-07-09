@@ -2,6 +2,7 @@ package com.impraise.supr.game.scenes.domain
 
 import android.util.Log
 import com.impraise.supr.data.ResultList
+import com.impraise.supr.data.either
 import com.impraise.supr.domain.ReactiveUseCase
 import com.impraise.supr.game.scenes.data.model.Member
 import io.reactivex.Flowable
@@ -26,8 +27,8 @@ class SplitIntoGroupsUseCase(
                             shuffle()
                         }
                     }, {
-                        Log.e(TAG, it.error.message)
-                        emptyList()
+                        Log.e(TAG, it.message)
+                        emptyList<Member>()
                     }))
                 }
                 .buffer(threshold)

@@ -2,9 +2,7 @@ package com.impraise.supr.game.scenes.domain
 
 import android.util.Log
 import com.impraise.supr.common.Pagination
-import com.impraise.supr.data.PaginatedRepository
-import com.impraise.supr.data.PaginatedResult
-import com.impraise.supr.data.ResultList
+import com.impraise.supr.data.*
 import com.impraise.supr.domain.ReactiveUseCase
 import com.impraise.supr.game.scenes.data.model.Member
 import io.reactivex.Flowable
@@ -47,15 +45,12 @@ class LoadRecursiveMembersUseCase(
     private fun fetch(currentState: CurrentState): Single<CurrentState> {
         return repository.fetch(Pagination(PAGE_SIZE, after = randomPageGenerator.randomPage(currentState.total).toString()))
                 .map { paginatedResult ->
-                    when (paginatedResult) {
-                        is PaginatedResult.Success -> {
-                            currentState.copy(count = currentState.count, total = paginatedResult.pageDetail.totalCount, items = paginatedResult.data)
-                        }
-                        is PaginatedResult.Error -> {
-                            Log.e(TAG, paginatedResult.error.message)
-                            currentState.copy(items = emptyList())
-                        }
-                    }
+                    paginatedResult.either({
+                        currentState.copy(count = currentState.count, total = it.pageDetail.totalCount, items = it.data)
+                    }, {
+                        Log.e(TAG, it.message)
+                        currentState.copy(items = emptyList())
+                    })
                 }.singleOrError()
     }
 }

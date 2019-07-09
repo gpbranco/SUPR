@@ -1,6 +1,7 @@
 package com.impraise.supr.game.scenes.presentation
 
 import com.impraise.supr.data.Result
+import com.impraise.supr.data.either
 import com.impraise.supr.domain.DomainLayerException
 import com.impraise.supr.game.scenes.domain.CreateGameUseCase
 import com.impraise.supr.game.scenes.domain.model.Game
@@ -52,16 +53,12 @@ class GameScene(val gamePresenter: GamePresenter,
                     gamePresenter.loading()
                 }
                 .subscribe({ result ->
-                    when (result) {
-                        is Result.Success -> {
-                            game = result.data
-                            gamePresenter.present(Result.Success(GameState.EMPTY_GAME))
-                        }
-
-                        is Result.Error -> {
-                            gamePresenter.present(Result.Error(result.error, GameState.EMPTY_GAME))
-                        }
-                    }
+                    result.either({
+                        game = it
+                        gamePresenter.present(Result.Success(GameState.EMPTY_GAME))
+                    }, {
+                        gamePresenter.present(Result.Error(it, GameState.EMPTY_GAME))
+                    })
                 }, {
                     gamePresenter.present(Result.Error(DomainLayerException(), GameState.EMPTY_GAME))
                 }).addTo(subscriptions)
