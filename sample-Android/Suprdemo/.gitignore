@@ -6,7 +6,7 @@
 /.idea/workspace.xml
 .DS_Store
 /build
-.idea/
+.idea/*
 *iml
 *.iml
 */build
@@ -20,7 +20,6 @@ gen/
 out/
 build/
 workspace.xml
-.idea
 ks.properties
 .classpath
 .project
