@@ -48,7 +48,7 @@ class LoadRecursiveMembersUseCase(
                     paginatedResult.either({
                         currentState.copy(count = currentState.count, total = it.pageDetail.totalCount, items = it.data)
                     }, {
-                        Log.e(TAG, it.message)
+                        Log.e(TAG, "Error:", it)
                         currentState.copy(items = emptyList())
                     })
                 }.singleOrError()

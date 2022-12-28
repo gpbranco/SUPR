@@ -27,7 +27,7 @@ class SplitIntoGroupsUseCase(
                             shuffle()
                         }
                     }, {
-                        Log.e(TAG, it.message)
+                        Log.e(TAG, "Error:", it)
                         emptyList<Member>()
                     }))
                 }
